@@ -14,8 +14,8 @@ class MahasiswaController extends Controller
      */
     public function index()
     {
-        $mahasiswa = Mahasiswa::all(); //Mengambil semua isi tabel
-        $posts = Mahasiswa::orderBy('Nim', 'desc')->paginate(6);
+        $mahasiswa = Mahasiswa::paginate(5);
+        $posts = Mahasiswa::orderBy('Nim', 'desc')->paginate(5);
         return view('mahasiswa.index', compact('mahasiswa'))
         ->with('i', (request()->input('page', 1) - 1) * 5);
     }
@@ -42,9 +42,11 @@ class MahasiswaController extends Controller
         $request->validate([
             'Nim' => 'required',
             'Nama' => 'required',
+            'Email' => 'required',
             'Kelas' => 'required',
             'Jurusan' => 'required',
             'No_Handphone' => 'required',
+            'TanggalLahir' => 'required',
         ]);
 
         //fungsi eloquent untuk menambah data
@@ -94,9 +96,11 @@ class MahasiswaController extends Controller
         $request->validate([
             'Nim' => 'required',
             'Nama' => 'required',
+            'Email' => 'required',
             'Kelas' => 'required',
             'Jurusan' => 'required',
             'No_Handphone' => 'required',
+            'TanggalLahir' => 'required',
         ]);
 
         //fungsi eloquent untuk mengupdate data inputan kita
@@ -119,5 +123,11 @@ class MahasiswaController extends Controller
         Mahasiswa::find($Nim)->delete();
         return redirect()->route('mahasiswa.index')
             ->with('success', 'Mahasiswa Berhasil Dihapus');
+    }
+
+    public function search(Request $request){
+        $keyword = $request->search;
+        $mahasiswa = Mahasiswa::where('Nama', 'like', "%". $keyword . "%")->paginate(5);
+        return view(view:'mahasiswa.index', data:compact(var_name:'mahasiswa'));
     }
 }
