@@ -6,6 +6,8 @@ use App\Models\Mahasiswa;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Mahasiswa_Matakuliah;
+use App\Models\MataKuliah;
 
 class MahasiswaController extends Controller
 {
@@ -161,5 +163,16 @@ class MahasiswaController extends Controller
         $keyword = $request->search;
         $mahasiswa = Mahasiswa::where('Nama', 'like', "%". $keyword . "%")->paginate(5);
         return view(view:'mahasiswa.index', data:compact(var_name:'mahasiswa'));
+    }
+
+    public function nilai($Nim)
+    {
+        //$Mahasiswa = Mahasiswa::find($nim);
+        $Mahasiswa = Mahasiswa::find($Nim);
+        $Matakuliah = Matakuliah::all();
+        //$MataKuliah = $Mahasiswa->MataKuliah()->get();
+        $Mahasiswa_Matakuliah = Mahasiswa_Matakuliah::where('mahasiswa_id','=',$Nim)->get();
+        return view('mahasiswa.nilai',['mahasiswa' => $Mahasiswa],['mahasiswa_matakuliah' => $Mahasiswa_Matakuliah],
+        ['matakuliah' => $Matakuliah], compact('Mahasiswa_Matakuliah'));
     }
 }
